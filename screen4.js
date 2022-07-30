@@ -5,19 +5,25 @@ import {Styles} from './style';
 function MyToDos() {
     const [data,setData]=useState('')
     const [indata,SetIndata]=useState(()=>{return[]})
+    const [editdata,setEditdata]= useState()
  const AddData=()=>{
-  const newtext = { id: new Date().getTime().toString(), name: data };
-    SetIndata([...indata,newtext])
-    console.log(data);
-    setData("")
+  if(editdata){
+    indata[editdata]=data
+    setData([...indata])
+  }
+  else{
+    SetIndata([...indata,data])
+  }
  }
- const DeletList=(ind)=>{
-  // alert("nbn b")
-  const deleteData = indata.filter((e)=>{
-    return SetIndata(e.id) ==""
-  })
-  SetIndata(deleteData)
- }
+ const DeletList=(i)=>{
+  indata.splice(i,1)
+  SetIndata([...indata])
+  }
+  const EditList=(e,ind)=>{
+    setEditdata(ind)
+    setData(e)
+  }
+ 
   return (
     <>
       <View style={{ backgroundColor:"#dad7cd",  width :"100%" ,height:"100%"}}>
@@ -50,13 +56,13 @@ function MyToDos() {
           }  */}
                   
         
-        <FlatList data={indata} renderItem={(e)=>{
+        <FlatList data={indata} renderItem={(e,i)=>{
             return<View style={Styles.parentList}> 
-              <Text style={Styles.list}  key={e.id}>{e.item.name}</Text>
-              <TouchableOpacity>
+              <Text style={Styles.list}  key={e.id}>{e.item}</Text>
+              <TouchableOpacity onPress={()=>EditList(e,i)}>
                 <Text style={Styles.listBtnE}>EDIT</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>DeletList(e.id)}>
+              <TouchableOpacity onPress={()=>DeletList(e)}>
                 <Text style={Styles.listBtn}>DEL</Text>
               </TouchableOpacity>
             </View>
